@@ -3,8 +3,10 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { query, exec, closePool } from './db';
 
+// 型をインポートする
 import type { Request, Response } from 'express';
 
+// ToDoの型をインターフェースとして定義する
 interface Todo {
     id: number;
     title: string;
@@ -12,24 +14,31 @@ interface Todo {
     createdAt: Date;
 }
 
+// .envファイルを読み込む
 dotenv.config();
 
+// 環境変数からポート番号を取得する
 const port = Number(process.env.PORT) || 3000;
 
+// Webサーバーの土台を作成する
 const app = express();
 
+// CORSの設定を行う
 app.use(cors({
     origin: 'http://localhost:5173',
     methods: ['GET', 'POST', 'PUT', 'DELETE']
 }));
 
+// JSON形式のリクエストボディを解析するミドルウェアを追加する
 app.use(express.json());
 
+// 共通で使うサーバーエラーを処理する関数
 function handleServerError(res: Response, err: unknown, message: string = 'サーバーエラー'){
     console.error(err);
     res.status(500).json({ error: message });
 }
 
+// ToDoを追加するルート
 app.post('/api/todos', async (req: Request, res: Response) => {
     const { title }: { title: string } = req.body;
 
@@ -99,6 +108,7 @@ app.delete('/api/todos/:id', async (req: Request, res: Response) => {
 
 });
 
+// ToDoの全データを返すルート
 app.get('/api/todos', async (req: Request, res: Response) => {
 
     try {

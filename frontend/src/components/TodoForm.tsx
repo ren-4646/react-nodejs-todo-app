@@ -1,5 +1,6 @@
-import { use, useState } from "react";
+import { useState } from "react";
 
+// 型をインポートする
 import type { SubmitEvent } from "react";
 
 type Props = {
@@ -9,7 +10,7 @@ type Props = {
 };
 
 function TodoForm({ onSubmit, initialTitle = '', submitLabel = '追加' }: Props) {
-    const [title, setTitle] = useState('initialTitle');
+    const [title, setTitle] = useState(initialTitle);
     const [error, setError] = useState('');
 
     const handleSubmit = (event: SubmitEvent) => {

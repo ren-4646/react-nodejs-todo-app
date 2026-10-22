@@ -53,7 +53,7 @@ function App() {
   }
 
   async function updateTodo(id: number, title: string, completed: boolean) {
-    const res = await fetch('${apiUrl}/todos/${id}', {
+    const res = await fetch(`${apiUrl}/todos/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ title, completed }),
@@ -63,7 +63,7 @@ function App() {
   }
 
   async function deleteTodo(id:number) {
-    const res = await fetch('${apiUrl}/todos', {
+    const res = await fetch(`${apiUrl}/todos/${id}`, {
       method: 'DELETE',
     });
 

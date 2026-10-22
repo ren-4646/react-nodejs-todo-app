@@ -1,17 +1,20 @@
 import mysql from 'mysql2/promise';
 import dotenv from 'dotenv';
 
+// 型をインポートする
 import type { RowDataPacket, ResultSetHeader } from 'mysql2/promise';
 
+// .envファイルを読み込む
 dotenv.config();
 
+// DB接続設定
 const dbConfig = {
  host: process.env.DB_HOST || 'localhost',
  port: Number(process.env.DB_PORT) || 3306,  // Macの場合は8889
  user: process.env.DB_USER || 'root',
  password: process.env.DB_PASSWORD || '',
  database: process.env.DB_NAME || ''
-}
+};
 
 // DB接続プール
 const pool = mysql.createPool(dbConfig);
@@ -37,6 +40,7 @@ export async function query<T = any>(sql:string, params: any[] = []) {
     }
 }
 
+// SQL(Insert,Update,Delete)を実行
 export async function exec(sql:string, params:any[] = []) {
     try {
         const [result] = await pool.execute<ResultSetHeader>(sql, params);
