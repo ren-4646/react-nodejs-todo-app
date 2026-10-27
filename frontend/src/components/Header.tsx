@@ -1,3 +1,5 @@
+import { UserPlus, LogIn, LogOut } from 'lucide-react';
+
 type Props = {
     isLoggedIn: boolean;
     onClickLogout: () => void;
@@ -14,15 +16,24 @@ function Header({ isLoggedIn, onClickLogout, onClickLogin, onClickRegister }: Pr
                 <ul>
                     {isLoggedIn ? (
                         <li>
-                            <button onClick={onClickLogout}>ログアウト</button>
+                            <button onClick={onClickLogout}>
+                                <LogOut />
+                                <span>ログアウト</span>
+                            </button>
                         </li>
                     ) : (
                         <>
                         <li>
-                            <button onClick={onClickLogin}>ログイン</button>
+                            <button onClick={onClickLogin}>
+                                <LogIn />
+                                <span>ログイン</span>
+                            </button>
                         </li>
                         <li>
-                            <button onClick={onClickRegister}>会員登録</button>
+                            <button onClick={onClickRegister}>
+                                <UserPlus />
+                                <span>会員登録</span>
+                            </button>
                         </li>
                         </>
                     )}

@@ -5,6 +5,7 @@ import RegisterForm from './components/RegisterForm';
 import Header from './components/Header';
 import { fetchTodos, addTodo, updateTodo, deleteTodo } from './api/todo';
 import { register, login, logout, fetchLoginStatus } from './api/auth';
+import { CircleCheckBig, Circle, SquarePen, Trash2 } from 'lucide-react';
 
 interface Todo {
   id: number;
@@ -67,144 +68,162 @@ function App() {
             setEditingId(null);
             alert('ログアウトしました。');
           } catch (err) {
-              alert((err as Error).message);
+            alert((err as Error).message);
           }
         }}
         onClickLogin={() => setShowRegister(false)}
         onClickRegister={() => setShowRegister(true)}
       />
-    <main>
-      {isLoggedIn ? (
-        <>
-          <h2>ToDo一覧</h2>
-          <TodoForm
-            onSubmit={async (title) => {
-              try {
-                await addTodo(title);
-                await syncTodos();
-              } catch (err) {
-                if (handleExpired(err)) return;
-                alert((err as Error).message);
-              }
-            }}
-          />
 
-          <ul>
-            {todos.map((todo) => (
-              <li key={todo.id}>
-                {editingId === todo.id ? (
-                  <>
-                  <TodoForm
-                      onSubmit={async (title) => {
-                        try {
-                          await updateTodo(todo.id, title, todo.completed);
-                          setEditingId(null);
-                          await syncTodos();
-                        } catch (err) {
-                          if (handleExpired(err)) return;
-                          alert((err as Error).message);
-                        }
-                      }}
-                      initialTitle={todo.title}
-                      submitLabel="更新"
-                    />
-                    <button onClick={() => setEditingId(null)}>キャンセル</button>
-                  </>
-                ) : (
-                  <>
-                    <strong>{todo.title}</strong>
-                    （作成日時: {new Date(todo.createdAt).toLocaleString('ja-JP')}）
-                    <button
-                      onClick={async () => {
-                        try {
-                          await updateTodo(todo.id, todo.title, !todo.completed);
-                          await syncTodos();
-                        } catch (err) {
-                          if (handleExpired(err)) return;
-                          alert((err as Error).message);
-                        }
-                      }}
-                      style={{ marginRight: '0.5em' }}
-                    >
-                      {todo.completed ? '✅' : '☐'}
-                    </button>
-                    <button
-                      onClick={() => setEditingId(todo.id)}
-                      style={{ marginRight: '0.5em' }}
-                    >
-                      編集
-                    </button>
-                    <button
-                      onClick={async () => {
-                        if (!confirm('本当に削除しますか？')) return;
-
-                        try {
-                          await deleteTodo(todo.id);
-                          await syncTodos();
-                        } catch (err) {
-                          if (handleExpired(err)) return;
-                          alert((err as Error).message);
-                        }
-                      }}
-                    >
-                      削除
-                    </button>
-                  </>
-                )}
-              </li>
-            ))}
-          </ul>
-        </>
-      ) : (
-        <section>
-          <h2>{showRegister ? '会員登録' : 'ログイン'}</h2>
-
-          {showRegister ? (
-            <>
-              <RegisterForm
-                onSubmit={async (email, password) => {
+      <main>
+        {isLoggedIn ? (
+          <>
+            <section className="todo-add-form-wrapper">
+              <TodoForm
+                onSubmit={async (title) => {
                   try {
-                    await register(email, password);
-                    setShowRegister(false);
-                    alert('会員登録が完了しました。');
+                    await addTodo(title);
+                    await syncTodos();
                   } catch (err) {
+                    if (handleExpired(err)) return;
                     alert((err as Error).message);
                   }
                 }}
               />
-            </>
-        ) : (
-          <>
-            <LoginForm
-              onSubmit={async (email, password) => {
-                try {
-                  await login(email, password);
-                  setIsLoggedIn(true);
-                  alert('ログインしました。');
-                  await syncTodos();
-                } catch (err) {
-                  alert((err as Error).message);
-                }
-              }}
-            />
-          </>
-        )}
+            </section>
 
-        {showRegister ? (
-          <>
-            <span>すでにアカウントをお持ちですか？</span>
-            <button onClick={() => setShowRegister(false)}>ログイン</button>
+            <section className="todo-list-wrapper">
+              <ul>
+                {todos.map((todo) => (
+                  <li key={todo.id}>
+                    {editingId === todo.id ? (
+                      // 編集ボタンが押されたときは、編集用フォームを表示する
+                      <div className="todo-edit-form-wrapper">
+                        <TodoForm
+                          onSubmit={async (title) => {
+                            try {
+                              await updateTodo(todo.id, title, todo.completed);
+                              setEditingId(null);
+                              await syncTodos();
+                            } catch (err) {
+                              if (handleExpired(err)) return;
+                              alert((err as Error).message);
+                            }
+                          }}
+                          initialTitle={todo.title}
+                          submitLabel="更新"
+                        />
+                        <div className="cancel-btn-wrapper">
+                          <button onClick={() => setEditingId(null)}>キャンセル</button>
+                        </div>
+                      </div>
+                    ) : (
+                      // 編集ボタンが押されていないときは、通常どおり表示する
+                      <>
+                        <div className="todo-text">
+                          <strong className="todo-title">{todo.title}</strong>
+                          <span className="todo-created-at">
+                            作成日時: {new Date(todo.createdAt).toLocaleString('ja-JP')}
+                          </span>
+                        </div>
+                        <div className="todo-btns">
+                          <button
+                            onClick={async () => {
+                              try {
+                                await updateTodo(todo.id, todo.title, !todo.completed);
+                                await syncTodos();
+                              } catch (err) {
+                                if (handleExpired(err)) return;
+                                alert((err as Error).message);
+                              }
+                            }}
+                            style={{ marginRight: '0.5em' }}
+                          >
+                            {todo.completed ? <CircleCheckBig size={16} color="#10b981" /> : <Circle size={16} />}
+                          </button>
+                          <button
+                            onClick={() => setEditingId(todo.id)}
+                            style={{ marginRight: '0.5em' }}
+                          >
+                            <SquarePen size={16} />
+                          </button>
+                          <button
+                            onClick={async () => {
+                              if (!confirm('本当に削除しますか？')) return;
+
+                              try {
+                                await deleteTodo(todo.id);
+                                await syncTodos();
+                              } catch (err) {
+                                if (handleExpired(err)) return;
+                                alert((err as Error).message);
+                              }
+                            }}
+                          >
+                            <Trash2 size={16} color="#ef4444" />
+                          </button>
+                        </div>
+                      </>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </section>
           </>
         ) : (
-          <>
-            <span>アカウントをお持ちではありませんか？</span>
-            <button onClick={() => setShowRegister(true)}>会員登録</button>
-          </>
+          <section className="auth-wrapper">
+            <div className="auth-card">
+              <h2>{showRegister ? '会員登録' : 'ログイン'}</h2>
+
+              {showRegister ? (
+                <>
+                  <RegisterForm
+                    onSubmit={async (email, password) => {
+                      try {
+                        await register(email, password);
+                        setShowRegister(false);
+                        alert('会員登録が完了しました。');
+                      } catch (err) {
+                        alert((err as Error).message);
+                      }
+                    }}
+                  />
+                </>
+              ) : (
+                <>
+                  <LoginForm
+                    onSubmit={async (email, password) => {
+                      try {
+                        await login(email, password);
+                        setIsLoggedIn(true);
+                        alert('ログインしました。');
+                        await syncTodos();
+                      } catch (err) {
+                        alert((err as Error).message);
+                      }
+                    }}
+                  />
+                </>
+              )}
+
+              <div className="auth-toggle">
+                {showRegister ? (
+                  <>
+                    <span>すでにアカウントをお持ちですか？</span>
+                    <button onClick={() => setShowRegister(false)}>ログイン</button>
+                  </>
+                ) : (
+                  <>
+                    <span>アカウントをお持ちではありませんか？</span>
+                    <button onClick={() => setShowRegister(true)}>会員登録</button>
+                  </>
+                )}
+              </div>
+            </div>
+          </section>
         )}
-      </section>
-      )}
-    </main>
-  </>
+      </main>
+    </>
   )
 }
 
