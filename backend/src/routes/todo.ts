@@ -24,7 +24,7 @@ function handleServerError(res: Response, err: unknown, message: string = 'サ�
 // ToDoの全データを返すルート
 router.get('/', async (req: Request, res: Response) => {
  try {
-   const sql = 'SELECT id, title, completed, created_at AS createdAt FROM todos WHERE user_id = ? ORDER BY createdAt DESC';
+   const sql = 'SELECT id, title, completed, created_at AS createdAt, updated_at AS updatedAt FROM todos WHERE user_id = ? ORDER BY createdAt DESC';
    const params = [(req as any).user.id];
    const rows = await query<Todo>(sql, params);
 
