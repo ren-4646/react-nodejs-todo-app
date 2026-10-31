@@ -245,7 +245,7 @@ form button:hover {
  margin: 0;
 }
 
-.todo-created-at {
+.todolist-date-at {
  font-size: 0.85rem;
  color: var(--c-text-muted);
  margin-top: 0.5rem;

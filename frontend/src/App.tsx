@@ -12,6 +12,7 @@ interface Todo {
   title: string;
   completed: boolean;
   createdAt: Date;
+  updatedAt: Date;
 }
 
 function App() {
@@ -122,8 +123,11 @@ function App() {
                       <>
                         <div className="todo-text">
                           <strong className="todo-title">{todo.title}</strong>
-                          <span className="todo-created-at">
+                          <span className="todolist-date-at">
                             作成日時: {new Date(todo.createdAt).toLocaleString('ja-JP')}
+                          </span>
+                          <span className="todolist-date-at">
+                            更新日時: {new Date(todo.updatedAt).toLocaleString('ja-JP')}
                           </span>
                         </div>
                         <div className="todo-btns">
